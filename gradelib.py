@@ -216,7 +216,7 @@ def assert_lines_match(text, *regexps, **kw):
 # Utilities
 #
 
-__all__ += ["make", "maybe_unlink", "reset_fs", "color", "random_str", "check_time", "check_answers"]
+__all__ += ["make", "maybe_unlink", "reset_fs", "color", "random_str", "check_time", "check_answers","check_references"]
 
 MAKE_TIMESTAMP = 0
 
@@ -273,6 +273,16 @@ def check_time():
                 raise AssertionError('time.txt does not contain a single integer (number of hours spent on the lab)')
     except IOError:
         raise AssertionError('Cannot read time.txt')
+    
+def check_references():
+    try:
+        print("")
+        with open('references.txt') as f:
+            d = f.read().strip()
+            if len(d) < 10:
+                raise AssertionError('references.txt does not seem to contain enough text')
+    except IOError:
+        raise AssertionError('Cannot read references.txt')
 
 def check_answers(file, n=10):
     try:
