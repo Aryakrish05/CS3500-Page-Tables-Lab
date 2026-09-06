@@ -164,6 +164,9 @@ kalloc_contig(int npages)
   while((1 << order) < npages)
     order++;
 
-  return buddyalloc(order);
+  char* mem = buddyalloc(order);
+  if(mem)
+    memset(mem, 5, npages * PGSIZE); // fill with junk
+  return mem;
 }
 #endif

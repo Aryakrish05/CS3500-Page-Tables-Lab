@@ -113,19 +113,21 @@ buddyfree(void *pa, int npages)
   if(npages <= 0){
     panic("buddyfree: invalid page count");
   }
+  
+  uint8 order = 0;
+  for(; order <= MAXORDER; order++){
+    if((1 << order) == npages) break;
+  }
+  if(order == MAXORDER + 1){
+    panic("buddyfree: npages must be a power of 2 and no larger than (1<<MAXORDER)");
+  }
+
   if((uint64)(pa) % (npages * PGSIZE)){
     panic("buddyfree: pa must be npages aligned");
   }
   if((uint64)(pa) < buddymem.managed_start ||
      (uint64)(pa) + npages * PGSIZE > buddymem.managed_end){
     panic("buddyfree: pa out of bounds");
-  }
-  uint8 order = 0;
-  for(; order <= MAXORDER; order++){
-    if((1 << order) == npages) break;
-  }
-  if(order == MAXORDER + 1){
-    panic("buddyfree: npages must be a power of 2");
   }
   
   acquire(&buddymem.lock);

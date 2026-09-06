@@ -253,7 +253,7 @@ growproc(int n)
 
 #ifdef LAB_PGTBL
 #ifndef BUDDY_INCOMPLETE
-// Grow using one contiguous physical run; shrinking uses the normal path.
+// Grow using one contiguous physical run
 // The positive increment must be a supported power-of-two number of pages.
 int
 growproc_contig(int n)
@@ -273,8 +273,6 @@ growproc_contig(int n)
     if((sz = uvmalloc_contig(p->pagetable, sz, sz + n, PTE_W)) == 0) {
       return -1;
     }
-  } else if(n < 0){
-    sz = uvmdealloc(p->pagetable, sz, sz + n);
   }
   p->sz = sz;
   return 0;

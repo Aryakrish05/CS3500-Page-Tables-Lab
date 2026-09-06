@@ -56,6 +56,7 @@ def test_usertests():
     r.run_qemu(shell_script([
         'usertests -q'
     ]), timeout=300)
+    r.match('^ALL TESTS PASSED$')
     
 @test(0, "time")
 def test_time():
