@@ -164,6 +164,15 @@ sbrklazy(int n) {
 }
 
 #ifdef LAB_PGTBL
+#ifndef BUDDY_INCOMPLETE
+char *
+sbrk_contig(int n) {
+  return sys_sbrk(n, SBRK_CONTIG);
+}
+#endif
+#endif
+
+#ifdef LAB_PGTBL
 int
 ugetpid(void)
 {

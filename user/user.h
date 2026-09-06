@@ -55,6 +55,11 @@ int memcmp(const void *, const void *, uint);
 void *memcpy(void *, const void *, uint);
 char* sbrk(int);
 char* sbrklazy(int);
+#ifdef LAB_PGTBL
+#ifndef BUDDY_INCOMPLETE
+char* sbrk_contig(int);
+#endif
+#endif
 #ifdef LAB_LOCK
 int statistics(void*, int);
 #endif
