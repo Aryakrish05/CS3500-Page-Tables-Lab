@@ -66,7 +66,19 @@ void            ireclaim(int);
 void*           kalloc(void);
 void            kfree(void *);
 void            kinit(void);
+#ifdef LAB_PGTBL
+void*           superalloc(void);
+void            superfree(void *);
+#ifndef BUDDY_INCOMPLETE
+void*           kalloc_contig(int npages);
+void            kfree_contig(void *pa, int npages);
 
+// buddyalloc.c
+void *          buddyalloc(uint8 order);
+void            buddyfree(void *pa, int npages);
+void            buddyinit(uint64 pa_start, uint64 pa_end);
+#endif 
+#endif
 // log.c
 void            initlog(int, struct superblock*);
 void            log_write(struct buf*);
@@ -89,6 +101,11 @@ int             cpuid(void);
 void            kexit(int);
 int             kfork(void);
 int             growproc(int);
+#ifdef LAB_PGTBL
+#ifndef BUDDY_INCOMPLETE
+int             growproc_contig(int);
+#endif
+#endif
 void            proc_mapstacks(pagetable_t);
 pagetable_t     proc_pagetable(struct proc *);
 void            proc_freepagetable(pagetable_t, uint64);
@@ -173,6 +190,11 @@ void            kvmmap(pagetable_t, uint64, uint64, uint64, int);
 int             mappages(pagetable_t, uint64, uint64, uint64, int);
 pagetable_t     uvmcreate(void);
 uint64          uvmalloc(pagetable_t, uint64, uint64, int);
+#ifdef LAB_PGTBL
+#ifndef BUDDY_INCOMPLETE
+uint64          uvmalloc_contig(pagetable_t, uint64, uint64, int);
+#endif
+#endif
 uint64          uvmdealloc(pagetable_t, uint64, uint64);
 int             uvmcopy(pagetable_t, pagetable_t, uint64);
 void            uvmfree(pagetable_t, uint64);
