@@ -251,6 +251,37 @@ growproc(int n)
   return 0;
 }
 
+#ifdef LAB_PGTBL
+#ifndef BUDDY_INCOMPLETE
+// Grow using one contiguous physical run; shrinking uses the normal path.
+// The positive increment must be a supported power-of-two number of pages.
+int
+growproc_contig(int n)
+{
+  uint64 sz;
+  struct proc *p = myproc();
+
+  if(n <= 0 || n % PGSIZE != 0)
+    return -1;
+
+  uint64 npages = n / PGSIZE;
+  if((npages & (npages - 1)) != 0 || npages > SUPERPGSIZE / PGSIZE)
+    return -1;
+
+  sz = p->sz;
+  if(n > 0){
+    if((sz = uvmalloc_contig(p->pagetable, sz, sz + n, PTE_W)) == 0) {
+      return -1;
+    }
+  } else if(n < 0){
+    sz = uvmdealloc(p->pagetable, sz, sz + n);
+  }
+  p->sz = sz;
+  return 0;
+}
+#endif
+#endif
+
 // Create a new process, copying the parent.
 // Sets up child kernel stack to return as if from fork() system call.
 int

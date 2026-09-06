@@ -54,7 +54,17 @@ sys_sbrk(void)
     if(growproc(n) < 0) {
       return -1;
     }
-  } else {
+  } 
+#ifdef LAB_PGTBL
+#ifndef BUDDY_INCOMPLETE
+  else if(t == SBRK_CONTIG){
+    if(growproc_contig(n) < 0){
+      return -1;
+    }
+  }
+#endif
+#endif
+  else {
     // Lazily allocate memory for this process: increase its memory
     // size but don't allocate memory. If the processes uses the
     // memory, vmfault() will allocate it.

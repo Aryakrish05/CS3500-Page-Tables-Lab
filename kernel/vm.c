@@ -271,6 +271,50 @@ uvmalloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz, int xperm)
   return newsz;
 }
 
+#ifdef LAB_PGTBL
+#ifndef BUDDY_INCOMPLETE
+// Map [oldsz, newsz) using a contiguous physical run. The requested growth
+// must be a supported power-of-two number of pages.
+uint64
+uvmalloc_contig(pagetable_t pagetable, uint64 oldsz, uint64 newsz, int xperm)
+{
+  char *mem;
+  int npages;
+  int mapped_pages = 0;
+
+  if(newsz < oldsz)
+    return oldsz;
+
+  npages = (newsz - oldsz + PGSIZE - 1) / PGSIZE;
+  oldsz = PGROUNDUP(oldsz);
+  if(newsz <= oldsz)
+    return newsz;
+
+  if((npages & (npages - 1)) != 0)
+    panic("uvmalloc_contig: page count is not a power of two");
+  if(npages > SUPERPGSIZE / PGSIZE)
+    panic("uvmalloc_contig: page count exceeds maximum order");
+
+  mem = kalloc_contig(npages);
+
+  if(mem == 0){
+    return 0;
+  }
+
+  for(; mapped_pages < npages; mapped_pages++){
+    uint64 va = oldsz + (uint64)mapped_pages * PGSIZE;
+    uint64 pa = (uint64)mem + (uint64)mapped_pages * PGSIZE;
+    if(mappages(pagetable, va, PGSIZE, pa, PTE_R|PTE_U|xperm) != 0){
+      uvmunmap(pagetable, oldsz, mapped_pages, 0);
+      kfree_contig(mem, npages);
+      return 0;
+    }
+  }
+  
+  return newsz;
+}
+#endif
+#endif
 // Deallocate user pages to bring the process size from oldsz to
 // newsz.  oldsz and newsz need not be page-aligned, nor does newsz
 // need to be less than oldsz.  oldsz can be larger than the actual
