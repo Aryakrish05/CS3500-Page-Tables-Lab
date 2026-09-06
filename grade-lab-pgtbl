@@ -11,6 +11,11 @@ def test_pgtbltest():
         'pgtbltest'
     ]), timeout=300)
 
+@test(5, "answers-pgtbl.txt")
+def test_answers():
+    # just a simple sanity check, will be graded manually
+    check_answers("answers-pgtbl.txt")
+    
 @test(10, "pgtbltest: ugetpid", parent=test_pgtbltest)
 def test_ugetpid_():
     r.match('^ugetpid_test: OK$')
@@ -32,23 +37,27 @@ def test_print_kpgtbl_():
         '^ \.\. \.\. \.\.(0xfffffffffffff000|0x0000003ffffff000)',
     )
 
-@test(15, "pgtbltest: superpg", parent=test_pgtbltest)
+@test(20, "pgtbltest: superpg", parent=test_pgtbltest)
 def test_superpg_():
     r.match('^superpg_fork: OK$')
     r.match('^superpg_free: OK$')
+    
+@test(5, "pgtbltest: buddyalloc", parent=test_pgtbltest)
+def test_buddyalloc_():
+    r.match('^buddy_contig: OK$')
+    r.match('^buddy_coalescing: OK$')
+        
+@test(5, "references.txt")
+def test_references():
+    check_references()
 
-@test(5, "answers-pgtbl.txt")
-def test_answers():
-    # just a simple sanity check, will be graded manually
-    check_answers("answers-pgtbl.txt")
-
-@test(0, "usertests")
+@test(5, "usertests")
 def test_usertests():
     r.run_qemu(shell_script([
         'usertests -q'
     ]), timeout=300)
-
-@test(1, "time")
+    
+@test(0, "time")
 def test_time():
     check_time()
 

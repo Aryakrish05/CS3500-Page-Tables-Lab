@@ -166,7 +166,7 @@ sbrklazy(int n) {
 #ifdef LAB_PGTBL
 #ifndef BUDDY_INCOMPLETE
 char *
-sbrk_contig(int n) {
+sbrkcontig(int n) {
   return sys_sbrk(n, SBRK_CONTIG);
 }
 #endif

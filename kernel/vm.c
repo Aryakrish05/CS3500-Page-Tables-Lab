@@ -285,8 +285,9 @@ uvmalloc_contig(pagetable_t pagetable, uint64 oldsz, uint64 newsz, int xperm)
   if(newsz < oldsz)
     return oldsz;
 
-  npages = (newsz - oldsz + PGSIZE - 1) / PGSIZE;
   oldsz = PGROUNDUP(oldsz);
+  npages = (newsz - oldsz + PGSIZE - 1) / PGSIZE;
+  
   if(newsz <= oldsz)
     return newsz;
 

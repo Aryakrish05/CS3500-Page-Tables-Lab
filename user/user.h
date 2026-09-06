@@ -57,7 +57,7 @@ char* sbrk(int);
 char* sbrklazy(int);
 #ifdef LAB_PGTBL
 #ifndef BUDDY_INCOMPLETE
-char* sbrk_contig(int);
+char* sbrkcontig(int);
 #endif
 #endif
 #ifdef LAB_LOCK
