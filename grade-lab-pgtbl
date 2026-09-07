@@ -5,12 +5,18 @@ from gradelib import *
 
 r = Runner(save("xv6.out"))
 
+def turn_off_buddyalloc(off=True):
+    with open("kernel/buddyalloc.h", "w") as f:
+        if off:
+            f.write("#define BUDDY_OFF\n")
+
 @test(0, "pgtbltest")
 def test_pgtbltest():
+    turn_off_buddyalloc(True)
     r.run_qemu(shell_script([
         'pgtbltest'
     ]), timeout=300)
-
+   
 @test(5, "answers-pgtbl.txt")
 def test_answers():
     # just a simple sanity check, will be graded manually
@@ -42,21 +48,34 @@ def test_superpg_():
     r.match('^superpg_fork: OK$')
     r.match('^superpg_free: OK$')
     
-@test(5, "pgtbltest: buddyalloc", parent=test_pgtbltest)
-def test_buddyalloc_():
-    r.match('^buddy_contig: OK$')
-    r.match('^buddy_coalescing: OK$')
-        
-@test(5, "references.txt")
-def test_references():
-    check_references()
-
-@test(5, "usertests")
-def test_usertests():
+@test(5, "pgtbl_usertests")
+def test_pgtbl_usertests():
+    turn_off_buddyalloc(True)
     r.run_qemu(shell_script([
         'usertests -q'
     ]), timeout=300)
     r.match('^ALL TESTS PASSED$')
+    
+@test(5, "buddytest: buddyalloc")
+def test_buddyalloc_():
+    turn_off_buddyalloc(False)
+    r.run_qemu(shell_script([
+        'buddytest'
+    ]), timeout=300)
+    r.match('^buddy_contig: OK$')
+    r.match('^buddy_coalescing: OK$')
+        
+@test(5, "buddyalloc_usertests")
+def test_buddyalloc_usertests():
+    turn_off_buddyalloc(False)
+    r.run_qemu(shell_script([
+        'usertests -q'
+    ]), timeout=300)
+    r.match('^ALL TESTS PASSED$')
+    
+@test(1, "references.txt")
+def test_references():
+    check_references()
     
 @test(0, "time")
 def test_time():

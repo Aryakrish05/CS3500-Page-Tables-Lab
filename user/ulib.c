@@ -4,6 +4,7 @@
 #include "kernel/riscv.h"
 #ifdef LAB_PGTBL
 #include "kernel/memlayout.h"
+#include "kernel/buddyalloc.h"
 #endif
 #include "kernel/vm.h"
 #include "user/user.h"
@@ -164,7 +165,7 @@ sbrklazy(int n) {
 }
 
 #ifdef LAB_PGTBL
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
 char *
 sbrkcontig(int n) {
   return sys_sbrk(n, SBRK_CONTIG);
