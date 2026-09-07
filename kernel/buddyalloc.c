@@ -19,9 +19,9 @@ struct buddy_run {
 // The three states a page-aligned physical address can be in,
 // as recorded by buddy_run_metadata[].
 enum block_status {
-  STATUS_FREE           = 0x00,   // whole block of the stored order, on freelist[order]
-  STATUS_USED           = 0x10,   // whole block of the stored order, handed out by buddyalloc()
-  STATUS_PART_OF_LARGER = 0x20,   // no longer a block itself, merged into a bigger block whose base is at a lower address
+  FREE      = 0x00,   // whole block of the stored order, on freelist[order]
+  ALLOCATED = 0x10,   // whole block of the stored order, handed out by buddyalloc()
+  SUBSUMED  = 0x20,   // part  of a bigger block whose base is at a lower address
 };
 
 struct {
@@ -35,19 +35,16 @@ struct {
   // Only addresses in [managed_start, managed_end) are valid allocator block
   // addresses; memory outside this range is not managed here.
   // For a FREE or USED entry, order is the size of the block beginning at pa.
-  // For a PART_OF_LARGER entry, order is the first block size that pa will
+  // For a SUBSUMED entry, order is the first block size that pa will
   // represent when its containing block is recursively split.
   // The status records whether the block is free, used, or part of a larger
-  // block whose base is at a lower address.
+  // block.
+
   uint8 buddy_run_metadata[MAXPAGES];
 
   // Freelist per order, freelist[i] consists of pointers to blocks of size ((1<<i) pages)
   struct buddy_run *freelist[MAXORDER + 1];
 } buddymem;
-
-// The following internal helpers require buddymem.lock to be held.
-
-// Metadata helpers.
 
 static enum block_status get_status(uint64 pa);
 static uint8 get_order(uint64 pa);
@@ -96,9 +93,9 @@ buddyinit(uint64 pa_start, uint64 pa_end)
     if(p >= max_seen){
       max_seen = p + order_size(get_order(p));
       push_to_freelist(get_order(p), (struct buddy_run *)p);
-      set_status(p, STATUS_FREE);
+      set_status(p, FREE);
     } else {
-      set_status((uint64)p, STATUS_PART_OF_LARGER);
+      set_status((uint64)p, SUBSUMED);
     }
   }
 }
