@@ -83,7 +83,7 @@ kfree(void *pa)
 void 
 superfree(void* pa){
 #ifdef BUDDY_INCOMPLETE
-  // YOUR CODE HERE (needed if buddyalloc is not implemented)
+  // YOUR CODE HERE - needed for the superpage lab
   return;
 #endif
 
@@ -135,7 +135,7 @@ void*
 superalloc(void)
 {
 #ifdef BUDDY_INCOMPLETE
-  // YOUR CODE HERE (needed if buddyalloc is not implemented)
+  // YOUR CODE HERE - needed for the superpage lab
   return 0;
 #endif
 
