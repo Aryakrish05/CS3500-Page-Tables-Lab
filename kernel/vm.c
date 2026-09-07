@@ -3,6 +3,7 @@
 #include "memlayout.h"
 #include "elf.h"
 #include "riscv.h"
+#include "buddyalloc.h"
 #include "defs.h"
 #include "spinlock.h"
 #include "proc.h"

@@ -1,5 +1,6 @@
 #include "types.h"
 #include "riscv.h"
+#include "buddyalloc.h"
 #include "param.h"
 #include "defs.h"
 #include "memlayout.h"
@@ -7,6 +8,7 @@
 #include "proc.h"
 #ifdef PGTBL_SOL
 #include "riscv.h"
+#include "buddyalloc.h"
 #endif
 #include "vm.h"
 

@@ -19,6 +19,7 @@
 #include "file.h"
 #include "memlayout.h"
 #include "riscv.h"
+#include "buddyalloc.h"
 #include "defs.h"
 #include "proc.h"
 

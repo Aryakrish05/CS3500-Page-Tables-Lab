@@ -3,6 +3,7 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "riscv.h"
+#include "buddyalloc.h"
 #include "defs.h"
 
 #ifndef BUDDY_INCOMPLETE

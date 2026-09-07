@@ -4,6 +4,7 @@
 
 #include "types.h"
 #include "riscv.h"
+#include "buddyalloc.h"
 #include "defs.h"
 #include "param.h"
 #include "fs.h"
