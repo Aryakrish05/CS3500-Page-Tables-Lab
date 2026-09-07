@@ -58,7 +58,7 @@ sys_sbrk(void)
     }
   } 
 #ifdef LAB_PGTBL
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
   else if(t == SBRK_CONTIG){
     if(growproc_contig(n) < 0){
       return -1;

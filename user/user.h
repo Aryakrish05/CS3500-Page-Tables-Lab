@@ -56,7 +56,7 @@ void *memcpy(void *, const void *, uint);
 char* sbrk(int);
 char* sbrklazy(int);
 #ifdef LAB_PGTBL
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
 char* sbrkcontig(int);
 #endif
 #endif

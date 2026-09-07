@@ -6,7 +6,7 @@
 #include "buddyalloc.h"
 #include "defs.h"
 
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
 
 #define MAXORDER 9    // 2MB = 512 pages
 #define MAXPAGES ((PHYSTOP - KERNBASE) / PGSIZE)

@@ -15,7 +15,7 @@ void freerange(void *pa_start, void *pa_end);
 extern char end[]; // first address after kernel.
                    // defined by kernel.ld.
 
-#ifdef BUDDY_INCOMPLETE
+#ifdef BUDDY_OFF
 struct run {
   struct run *next;
 };
@@ -29,16 +29,16 @@ struct {
 void
 kinit()
 {
-#ifdef BUDDY_INCOMPLETE
+#ifdef BUDDY_OFF
   initlock(&kmem.lock, "kmem");
   freerange(end, (void*)PHYSTOP);
 #endif
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
   buddyinit((uint64)end, PHYSTOP);
 #endif
 }
 
-#ifdef BUDDY_INCOMPLETE
+#ifdef BUDDY_OFF
 //assumption - this is called only in kinit()
 void
 freerange(void *pa_start, void *pa_end)
@@ -58,7 +58,7 @@ freerange(void *pa_start, void *pa_end)
 void
 kfree(void *pa)
 {
-#ifdef BUDDY_INCOMPLETE
+#ifdef BUDDY_OFF
   struct run *r;
 
   if(((uint64)pa % PGSIZE) != 0 || (char*)pa < end || (uint64)pa >= PHYSTOP)
@@ -75,26 +75,26 @@ kfree(void *pa)
   release(&kmem.lock);
 #endif
 
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
   buddyfree(pa, 1);
 #endif
 }
 
 void 
 superfree(void* pa){
-#ifdef BUDDY_INCOMPLETE
+#ifdef BUDDY_OFF
   // YOUR CODE HERE - needed for the superpage lab
   return;
 #endif
 
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
   if(((uint64)pa % SUPERPGSIZE) != 0)
     panic("superfree: not superpage aligned");
   buddyfree(pa, SUPERPGSIZE / PGSIZE);
 #endif
 }
 
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
 // Frees buddy allocated npages contiguous pages with start at pa
 // npages should be a power of 2
 void
@@ -109,7 +109,7 @@ kfree_contig(void* pa,int npages){
 void *
 kalloc(void)
 {
-#ifdef BUDDY_INCOMPLETE
+#ifdef BUDDY_OFF
   struct run *r;
 
   acquire(&kmem.lock);
@@ -123,7 +123,7 @@ kalloc(void)
   return (void*)r;
 #endif
 
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
   void *pa = buddyalloc(0);
   if(pa)
     memset(pa, 5, PGSIZE); // fill with junk
@@ -134,12 +134,12 @@ kalloc(void)
 void*
 superalloc(void)
 {
-#ifdef BUDDY_INCOMPLETE
+#ifdef BUDDY_OFF
   // YOUR CODE HERE - needed for the superpage lab
   return 0;
 #endif
 
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
   uint8 order = 0;
   while(((uint64)1 << order) * PGSIZE < SUPERPGSIZE)
     order++;
@@ -151,7 +151,7 @@ superalloc(void)
 #endif
 }
 
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
 // Allocate npages contiguous pages. npages must be a power of two
 // no larger than the maximum buddy block.
 void* 

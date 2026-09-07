@@ -69,7 +69,7 @@ void            kinit(void);
 #ifdef LAB_PGTBL
 void*           superalloc(void);
 void            superfree(void *);
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
 void*           kalloc_contig(int npages);
 void            kfree_contig(void *pa, int npages);
 
@@ -102,7 +102,7 @@ void            kexit(int);
 int             kfork(void);
 int             growproc(int);
 #ifdef LAB_PGTBL
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
 int             growproc_contig(int);
 #endif
 #endif
@@ -191,7 +191,7 @@ int             mappages(pagetable_t, uint64, uint64, uint64, int);
 pagetable_t     uvmcreate(void);
 uint64          uvmalloc(pagetable_t, uint64, uint64, int);
 #ifdef LAB_PGTBL
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
 uint64          uvmalloc_contig(pagetable_t, uint64, uint64, int);
 #endif
 #endif

@@ -273,7 +273,7 @@ uvmalloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz, int xperm)
 }
 
 #ifdef LAB_PGTBL
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
 // Map [oldsz, newsz) using a contiguous physical run. The requested growth
 // must be a supported power-of-two number of pages.
 uint64

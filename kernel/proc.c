@@ -253,7 +253,7 @@ growproc(int n)
 }
 
 #ifdef LAB_PGTBL
-#ifndef BUDDY_INCOMPLETE
+#ifndef BUDDY_OFF
 // Grow using one contiguous physical run
 // The positive increment must be a supported power-of-two number of pages.
 int
